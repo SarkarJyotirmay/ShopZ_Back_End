@@ -58,6 +58,7 @@ const login = async (req, res) => {
       firstName: user.firstName,
       email: user.email,
       role: user.role,
+      address: user.address
     };
     const token = jwt.sign(tokenData, process.env.JWT_SECRET_KEY, {
       expiresIn: "1d",
@@ -66,7 +67,7 @@ const login = async (req, res) => {
     res.json({
       success: true,
       message: "Login successful",
-      user: tokenData, 
+      user: tokenData,
       token: token,
     });
   } catch (error) {
@@ -93,11 +94,18 @@ const resetPassword = async (req, res) => {
   });
 };
 
+const changePassword = (req, res) => {
+  res.json({
+    from: "CHange pass api",
+  });
+};
+
 const userController = {
   register,
   login,
   forgotPassword,
   resetPassword,
+  changePassword,
 };
 
 module.exports = userController;

@@ -9,6 +9,7 @@ const tokenValidation = require("./middlewares/tokenValidation.middleware.js");
 const AuthRoutetr = require("./routes/auth.route.js");
 const CartRouter = require("./routes/cart.route.js");
 const CuponRouter = require("./routes/cupon.route.js");
+const OrderRouter = require("./routes/order.route.js")
 
 const app = express();
 
@@ -27,10 +28,11 @@ mongoose
 // Modular routes
 app.use("/api/v1/user", userRoutes);
 // app.use(tokenValidation) // middleware to validate token
-app.use("/api/v1/auth", tokenValidation, AuthRoutetr);
+app.use("/api/v1/auth", tokenValidation, AuthRoutetr); // responses user 
 app.use("/api/v1/products", ProductRouter);
 app.use("/api/v1/cart", tokenValidation, CartRouter);
 app.use("/api/v1/cupon/", tokenValidation, CuponRouter)
+app.use("/api/v1/order/", tokenValidation, OrderRouter)
 
 const portNo = process.env.PORT_NO || 8080;
 

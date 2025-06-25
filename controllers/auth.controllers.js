@@ -6,7 +6,7 @@ const bypassLogin = (req, res) => {
   });
 };
 
-const authControllers = {
+const authControllers = { 
   bypassLogin,
 };
 

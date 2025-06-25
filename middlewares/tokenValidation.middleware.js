@@ -7,7 +7,7 @@ const tokenValidation = async (req, res, next) => {
   // check if token present
   // check if token is ours or not (with our secret key)
   // check if token expired or not
-if(! req.headers.authorization){
+if(!req.headers.authorization){
   return res.status(401).json({
     success: false,
     message: "Token is not found",
