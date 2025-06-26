@@ -1,7 +1,9 @@
 const UserModel = require("../models/user.model.js");
 const bcrypt = require("bcrypt");
 const jwt = require("jsonwebtoken");
+const dayjs = require("dayjs");
 
+// register => payload => user Schema
 const register = async (req, res) => {
   // Todo:  Write validation for req body
   try {
@@ -21,8 +23,8 @@ const register = async (req, res) => {
     });
   }
 };
-// register => payload => Schema
 
+// login => payload => {email, password}
 const login = async (req, res) => {
   // email and pass structure validation is checked in middleware
   // cjheck if user is present in db
@@ -58,7 +60,7 @@ const login = async (req, res) => {
       firstName: user.firstName,
       email: user.email,
       role: user.role,
-      address: user.address
+      address: user.address,
     };
     const token = jwt.sign(tokenData, process.env.JWT_SECRET_KEY, {
       expiresIn: "1d",
@@ -78,26 +80,99 @@ const login = async (req, res) => {
     });
   }
 };
-// login => payload => {email, password}
 
+// payload => {email}
 const forgotPassword = async (req, res) => {
-  res.json({
-    succes: true,
-    message: "Dummy forgot password API",
-  });
+  // create OTP -> store OTP in DB -> send mail
+  try {
+    const otp = Math.floor(Math.random() * 10000);
+    const otpExpiry = dayjs().add(5, "minutes").toDate();
+
+    await UserModel.updateOne(
+      { email: req.body.email },
+      { passwordOTP: otp, passwordOTPExpiry: otpExpiry }
+    );
+    // sent email with mail dev and node mailer
+
+    res.json({
+      succes: true,
+      message: "Password reset OTP sent on registered email",
+      otp,
+      otpExpiry: "5 minutes",
+    });
+  } catch (error) {
+    res.status(500).json({
+      success: false,
+      message: "Failed to forgot password",
+      from: "forgot password api",
+      error,
+    });
+  }
 };
 
+//
 const resetPassword = async (req, res) => {
-  res.json({
-    succes: true,
-    message: "Dummy reset password API",
-  });
+  // payload => {email, otp, newPass}
+  //  find user (with email & otp) ->validate the otp (current otp, expiry) -> update password
+  try {
+    const user = await UserModel.findOne({
+      email: req.body.email,
+      passwordOTP: req.body.otp,
+    });
+    if (!user) {
+      return res.status(400).json({
+        success: false,
+        message: "User not found",
+      });
+    }
+    const isOtpMatched = user.passwordOTP == req.body.otp;
+    const isOTPValid = dayjs().isBefore(user.passwordOTPExpiry);
+
+    if (!isOtpMatched || !isOTPValid) {
+      return res.status(400).json({
+        success: false,
+        message: "OTP is not valid",
+      });
+    }
+
+    const newHashedPass = await bcrypt.hash(req.body.newPassword, 10);
+    await UserModel.updateOne(
+      { email: req.body.email },
+      {
+        $set: { password: newHashedPass },
+      }
+    );
+
+    res.json({
+      succes: true,
+      message: "Successfullt reseted password",
+    });
+  } catch (error) {}
 };
 
-const changePassword = (req, res) => {
-  res.json({
-    from: "CHange pass api",
-  });
+//
+const changePassword = async (req, res) => {
+  try {
+    const { newPassword } = req.body;
+    const hashPass = await bcrypt.hash(newPassword, 10);
+    await UserModel.updateOne(
+      { email: req.body.email },
+      {
+        $set: { password: hashPass },
+      }
+    );
+    res.json({
+      success: true,
+      message: "Password changed successfully",
+    });
+  } catch (error) {
+    res.status(500).json({
+      success: false,
+      message: "Failed to change password",
+      from: "change password api",
+      error,
+    });
+  }
 };
 
 const userController = {
