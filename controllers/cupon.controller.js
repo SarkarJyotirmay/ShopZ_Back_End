@@ -34,6 +34,11 @@ const listCupons = async (req, res) => {
   })
 };
 
+// const remove = await (req, res)=>{
+//   // payload => {cuponId}
+//   const cupon = await CuponModel.findOne({_id: req.body.cuponId})
+// }
+
 const cuponControllers = {
   create,
   listCupons,
