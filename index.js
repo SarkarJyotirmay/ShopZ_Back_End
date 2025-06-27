@@ -10,6 +10,7 @@ const AuthRoutetr = require("./routes/auth.route.js");
 const CartRouter = require("./routes/cart.route.js");
 const CuponRouter = require("./routes/cupon.route.js");
 const OrderRouter = require("./routes/order.route.js")
+const WishlistRouter = require("./routes/wishlist.route.js")
 
 const app = express();
 
@@ -31,6 +32,7 @@ app.use("/api/v1/user", userRoutes);
 app.use("/api/v1/auth", tokenValidation, AuthRoutetr); // responses user 
 app.use("/api/v1/products", ProductRouter);
 app.use("/api/v1/cart", tokenValidation, CartRouter);
+app.use("/api/v1/wishlist", tokenValidation, WishlistRouter);
 app.use("/api/v1/cupon/", tokenValidation, CuponRouter)
 app.use("/api/v1/order/", tokenValidation, OrderRouter)
 
