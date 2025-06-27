@@ -1,3 +1,4 @@
+
 # 🛍️ ShopZ API Documentation
 
 > **Base URL:**  
@@ -28,7 +29,7 @@
 | Get All Products    | GET    | `/products/list`      | `—` |
 | Get Single Product  | GET    | `/products/:id`       | `—` |
 | Create Product      | POST   | `/products/create`    | `{ title, description, price, discount, stock, brand, category, thumbnail, images }` |
-| Remove Product      | POST   | `/products/remove`    | `{ _id_ }` | *here _id is productId
+| Remove Product      | POST   | `/products/remove`    | `{ _id }` | *`_id` is the productId
 
 ---
 
@@ -90,147 +91,136 @@
 
 ```js
 // Register
-const payload = {
-  "fname": "Kankana",
-  "lname": "Das",
-  "email": "kankana@gmail.com",
-  "password": "123456",
-  "address": {
-    "addressLine1": "123 Main Street",
-    "addressLine2": "Near City Mall",
-    "landmark": "Opposite Central Park",
-    "city": "Kolkata",
-    "state": "West Bengal",
-    "pincode": "700001"
+axios.post(`${baseURL}/user/register`, {
+  fname: "Kankana",
+  lname: "Das",
+  email: "kankana@gmail.com",
+  password: "123456",
+  address: {
+    addressLine1: "123 Main Street",
+    addressLine2: "Near City Mall",
+    landmark: "Opposite Central Park",
+    city: "Kolkata",
+    state: "West Bengal",
+    pincode: "700001"
   },
-  "role": "buyer"
-};
-
-axios.post(`${baseURL}/user/register`, payload);
+  role: "buyer"
+});
 
 // Login
-const payload = {
-  "email": "kankana@gmail.com",
-  "password": "123456"
-};
+axios.post(`${baseURL}/user/login`, {
+  email: "kankana@gmail.com",
+  password: "123456"
+});
 
-axios.post(`${baseURL}/user/login`, payload);
+// Stateless Login
+axios.get(`${baseURL}/auth/bypass/login`);
 
-// For state less login with token
-axios.get(`${baseURL}/auth/bypass/login`)
-
-// Forgot password
-const payload = {
-  "email": "kankana@gmail.com"
-};
-
-axios.post(`${baseURL}/user/forget-password`, payload);
+// Forgot Password
+axios.post(`${baseURL}/user/forget-password`, {
+  email: "kankana@gmail.com"
+});
 
 // Reset Password
-const payload = {
-  "email": "kankana@gmail.com",
-  "otp": "1234",
-  "newPassword": "newsecurepass"
-};
+axios.post(`${baseURL}/user/reset-password`, {
+  email: "kankana@gmail.com",
+  otp: "1234",
+  newPassword: "newsecurepass"
+});
 
-axios.post(`${baseURL}/user/reset-password`, payload);
+// Change Password
+axios.post(`${baseURL}/user/change-password`, {
+  email: "kankana@gmail.com",
+  newPassword: "updatedpass123"
+});
+```
 
-// Change password
-const payload = {
-  "email": "kankana@gmail.com",
-  "newPassword": "updatedpass123"
-};
+---
 
-axios.post(`${baseURL}/user/change-password`, payload);
+### 🛍️ Cart APIs
 
-
-// CART APIS
-
+```js
 // Add to Cart
-const payload = {
-  "productId": "PRODUCT_ID_HERE",
-  "qty": 2
-};
-
-axios.post(`${baseURL}/cart/add`, payload);
+axios.post(`${baseURL}/cart/add`, {
+  productId: "PRODUCT_ID_HERE",
+  qty: 2
+});
 
 // Remove from Cart
-const payload = {
-  "productId": "PRODUCT_ID_HERE",
-  "qty": 1
-};
+axios.post(`${baseURL}/cart/remove`, {
+  productId: "PRODUCT_ID_HERE",
+  qty: 1
+});
 
-axios.post(`${baseURL}/cart/remove`, payload);
-
-// Get All cart items
+// Get Cart Items
 axios.get(`${baseURL}/cart/`);
+```
 
-// 🛍️ Wishlist APIs
+---
 
-// Add to wishlist
-const payload = {
-  "productId": "PRODUCT_ID_HERE",
-  "qty": 1
-};
+### 🛍️ Wishlist APIs
 
-axios.post(`${baseURL}/wishlist/add`, payload);
+```js
+// Add to Wishlist
+axios.post(`${baseURL}/wishlist/add`, {
+  productId: "PRODUCT_ID_HERE",
+  qty: 1
+});
 
-// remove from wishlist
-const payload = {
-  "productId": "PRODUCT_ID_HERE",
-  "qty": 1
-};
+// Remove from Wishlist
+axios.post(`${baseURL}/wishlist/remove`, {
+  productId: "PRODUCT_ID_HERE",
+  qty: 1
+});
 
-axios.post(`${baseURL}/wishlist/remove`, payload);
-
-// Get wishlist items
+// Get Wishlist Items
 axios.get(`${baseURL}/wishlist/`);
+```
 
-// CUPON APIs
+---
 
-// Create cupom
-const payload = {
-  "code": "SAVE10",
-  "discountPercentage": 10,
-  "maxDixcountValue": 100,
-  "minOrderValue": 500,
-  "startDate": "2025-06-01",
-  "endDate": "2025-06-30"
-};
+### 🎟️ Cupon APIs
 
-axios.post(`${baseURL}/cupon/create`, payload);
+```js
+// Create Cupon
+axios.post(`${baseURL}/cupon/create`, {
+  code: "SAVE10",
+  discountPercentage: 10,
+  maxDixcountValue: 100,
+  minOrderValue: 500,
+  startDate: "2025-06-01",
+  endDate: "2025-06-30"
+});
 
-// Get all cupons
+// Get All Cupons
 axios.get(`${baseURL}/cupon/list`);
+```
 
-// 📦 Order APIs
+---
 
+### 📦 Order APIs
+
+```js
 // Create Order
-const payload = {
-  "cupon": "SAVE10",
-  "mode": "COD",
-  "address": {
-    "addressLine1": "123 Main Street",
-    "addressLine2": "Near City Mall",
-    "landmark": "Opposite Central Park",
-    "city": "Kolkata",
-    "state": "West Bengal",
-    "pincode": "700001"
+axios.post(`${baseURL}/order/create`, {
+  cupon: "SAVE10",
+  mode: "COD",
+  address: {
+    addressLine1: "123 Main Street",
+    addressLine2: "Near City Mall",
+    landmark: "Opposite Central Park",
+    city: "Kolkata",
+    state: "West Bengal",
+    pincode: "700001"
   }
-};
+});
 
-axios.post(`${baseURL}/order/create`, payload);
+// Remove Order
+axios.post(`${baseURL}/order/remove`, {
+  productId: "PRODUCT_ID_HERE",
+  qty: 1
+});
 
-// Remove order
-const payload = {
-  "productId": "PRODUCT_ID_HERE",
-  "qty": 1
-};
-
-axios.post(`${baseURL}/order/remove`, payload);
-
-// get orders list
+// Get Orders
 axios.get(`${baseURL}/order/`);
-
-
-
+```
