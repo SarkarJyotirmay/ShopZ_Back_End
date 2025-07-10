@@ -33,7 +33,9 @@ const addToCart = async (req, res) => {
     }
 
     // Re-fetch updated cart with populated product
-    const updatedCart = await CartModel.findOne({ userId }).populate("products.productId");
+    const updatedCart = await CartModel.findOne({ userId }).populate(
+      "products.productId"
+    );
 
     // Get the updated/added product from populated cart
     const updatedProduct = updatedCart.products.find(
@@ -50,7 +52,6 @@ const addToCart = async (req, res) => {
     res.status(500).json({ success: false, message: "Server error" });
   }
 };
-
 
 // ! Decrease from cart
 // payload => {productId, qty}
@@ -100,10 +101,30 @@ const getCart = async (req, res) => {
   });
 };
 
+// ! clear cart
+ clearCart = async (req, res) => {
+  try {
+   const cart = await CartModel.findOne({userId: req.userData._id});
+    await CartModel.findByIdAndDelete(cart._id);
+    res.json({
+      success: true,
+      cart: [],
+      message: "Cart deleted successfully.",
+    });
+  } catch (error) {
+    res.status(500).json({
+      success: false,
+      message: "Server error from clear cart api",
+      error
+    })
+  }
+};
+
 const cartControllers = {
   addToCart,
   removeFromCart,
   getCart,
+  clearCart
 };
 
 module.exports = cartControllers;

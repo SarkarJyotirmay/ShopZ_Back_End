@@ -94,7 +94,7 @@ const getProduct = async (req, res) => {
     const product = await ProductModel.findById(_id);
     res.json({
       success: true,
-      message: `Product created successfully with id: ${_id}`,
+      message: `Product fetched successfully`,
       product: product,
     });
   } catch (error) {

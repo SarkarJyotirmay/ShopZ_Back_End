@@ -7,7 +7,7 @@ ProductRouter.get("/list", listProduct)
 
 ProductRouter.post("/create",tokenValidation, createProduct)
 
-ProductRouter.get("/:_id", tokenValidation, getProduct)
+ProductRouter.get("/:_id", getProduct)
 
 ProductRouter.post("/remove", tokenValidation, removeProduct)
 
